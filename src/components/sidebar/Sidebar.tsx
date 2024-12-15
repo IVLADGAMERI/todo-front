@@ -24,7 +24,7 @@ function Sidebar() {
       },
       (error) => {
         console.log(error);
-          window.location.href = authenticationUrl;
+        window.location.href = authenticationUrl;
       }
     );
   };
@@ -74,7 +74,7 @@ function Sidebar() {
         style={{
           backgroundColor: "#292d30",
           maxHeight: "50vh",
-          overflowY: "auto",
+          overflowY: "hidden",
         }}
       >
         <Row className="mb-2 d-flex align-items-center">
@@ -93,7 +93,7 @@ function Sidebar() {
             <SidebarSettingsNavLink />
           </Col>
         </Row>
-        <Row className="d-flex flex-column">{sidebarItems}</Row>
+        <Row className="overflow-y-scroll">{sidebarItems}</Row>
         <NewTopicModal
           show={showNewTopicModal}
           onHide={() => setShowNewTopicModal(false)}
