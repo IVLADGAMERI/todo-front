@@ -7,7 +7,7 @@ function NewTopicModal(props: {
   onSubmit: (title: string) => void;
   isLoading: boolean;
 }) {
-    const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("");
   const [validated, setValidated] = useState(false);
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -29,7 +29,7 @@ function NewTopicModal(props: {
           <Form.Group controlId="newTopicName">
             <Form.Label>Название</Form.Label>
             <Form.Control
-            value={title}
+              value={title}
               required
               minLength={3}
               maxLength={16}
@@ -45,7 +45,6 @@ function NewTopicModal(props: {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary">Назад</Button>
           <Button variant="primary" type="submit" disabled={props.isLoading}>
             Подтвердить
           </Button>
