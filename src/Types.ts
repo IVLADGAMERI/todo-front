@@ -6,6 +6,7 @@ export interface Task {
 }
 
 export interface Topic {
+    id: number;
     title: number;
     tasks: Task[];
 }

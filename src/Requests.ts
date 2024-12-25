@@ -31,5 +31,19 @@ export function addTopic(
     });
 }
 
+export function deleteTopic(
+  id: number,
+  onSuccess: (data: Topic[]) => void,
+  onError: (error: AxiosError) => void
+) {
+  axios.delete("http://localhost:8080/topic", {data: {id: id}, withCredentials: true})
+  .then((response) => {
+    onSuccess(response.data);
+  })
+  .catch((error) => {
+    onError(error);
+  })
+}
+
 export const authenticationUrl =
   "http://localhost:8080/oauth2/authorization/github";

@@ -16,6 +16,7 @@ function NewTopicModal(props: {
     console.log(form.checkValidity());
     if (form.checkValidity()) {
       props.onSubmit(title);
+      setTitle("");
     }
     setValidated(true);
   };

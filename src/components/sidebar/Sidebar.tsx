@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 import { Topic } from "../../Types";
-import { authenticationUrl, getTopics, addTopic } from "../../Requests";
+import { authenticationUrl, getTopics, addTopic, deleteTopic } from "../../Requests";
 import SidebarItem from "./SidebarItem";
 import { useParams } from "react-router-dom";
 import InlineButton from "../inlineButton/InlineButton";
@@ -14,7 +14,7 @@ function Sidebar() {
   const [loadingTopicsUpdate, setLoadingTopicsUpdate] = useState(false);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [showNewTopicModal, setShowNewTopicModal] = useState<boolean>(false);
-  const addNewTopic = (title: string) => {
+  const addTopicCallback = (title: string) => {
     setLoadingTopicsUpdate(true);
     addTopic(
       title,
@@ -28,6 +28,19 @@ function Sidebar() {
       }
     );
   };
+  const deleteTopicCallback = (event: any, id: number) => {
+    setLoadingTopicsUpdate(true);
+    deleteTopic(
+      id,
+      (data) => {
+        setLoadingTopicsUpdate(false);
+      },
+      (error) => {
+        console.log(error);
+        window.location.href = authenticationUrl;
+      }
+    )
+  }
   useEffect(() => {
     if (!loadingTopicsUpdate || loadingTopics) {
       getTopics(
@@ -63,6 +76,8 @@ function Sidebar() {
   } else if (topics) {
     const sidebarItems = topics.map((item) => (
       <SidebarItem
+        onDelete={deleteTopicCallback}
+        onUpdate={console.log}
         activeTaskId={activeTaskId}
         eventKey={topics.indexOf(item).toString()}
         topic={item}
@@ -98,7 +113,7 @@ function Sidebar() {
           show={showNewTopicModal}
           onHide={() => setShowNewTopicModal(false)}
           isLoading={loadingTopicsUpdate}
-          onSubmit={addNewTopic}
+          onSubmit={addTopicCallback}
         />
       </Container>
     );
