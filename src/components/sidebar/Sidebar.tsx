@@ -58,8 +58,9 @@ function Sidebar() {
   if (loadingTopics) {
     return (
       <Container
-        className="d-flex flex-column rounded p-3"
-        style={{ backgroundColor: "#292d30" }}
+        fluid
+        className="d-flex flex-column rounded-3 p-3"
+        style={{ backgroundColor: "var(--block-bg)" }}
       >
         <Row>
           <Col>

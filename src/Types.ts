@@ -10,3 +10,9 @@ export interface Topic {
     title: number;
     tasks: Task[];
 }
+
+export interface UserDTO {
+    login: string;
+    imgUrl: string;
+    profileUrl: string
+}
