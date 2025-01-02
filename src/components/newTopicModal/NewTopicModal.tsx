@@ -16,7 +16,7 @@ function NewTopicModal(props: {
     console.log(form.checkValidity());
     if (form.checkValidity()) {
       props.onSubmit(title);
-      setTitle("");
+      setTimeout(() => {setTitle("")}, 200);
     }
     setValidated(true);
   };
