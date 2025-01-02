@@ -11,14 +11,17 @@ function SidebarItem(props: {
   eventKey: string;
   activeTaskId: string | undefined;
   onDelete: (event: any, id: number) => void;
-  onUpdate: (event: any, id: number) => void;
+  onRename: (event: any, id: number) => void;
+  setShowNewTaskModal: (show: boolean) => void;
+  setNewTaskTopicId: (topicId: number) => void;
 }) {
   const [activeKey, setActiveKey] = useState<
     string | string[] | null | undefined
   >(null);
-  const tasksItems = props.topic.tasks.map((item) => (
+  const tasksNavlinks = props.topic.tasks.map((item) => (
     <SidebarTaskNavLink activeTaskId={props.activeTaskId} task={item} />
   ));
+  
   const accordionButtonOnClick = () => {
     setActiveKey((prevKey) =>
       prevKey === props.eventKey ? null : props.eventKey
@@ -48,9 +51,12 @@ function SidebarItem(props: {
         <Accordion.Collapse eventKey={props.eventKey}>
           <Container className="pt-1">
             <Row>
-              {tasksItems}
+              {tasksNavlinks}
               <Col xs={12} className="pe-0">
-                <AddTaskButton />
+                <AddTaskButton onClick={() => {
+                    props.setNewTaskTopicId(props.topic.id)
+                    props.setShowNewTaskModal(true)
+                  }} />
               </Col>
             </Row>
           </Container>

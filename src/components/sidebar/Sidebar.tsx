@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
-import { Topic } from "../../Types";
-import { authenticationUrl, getTopics, addTopic, deleteTopic } from "../../Requests";
+import { Topic, TaskPriority } from "../../Types";
+import {
+  authenticationUrl,
+  getTopics,
+  addTopic,
+  deleteTopic,
+  addTask,
+} from "../../Requests";
 import SidebarItem from "./SidebarItem";
 import { useParams } from "react-router-dom";
 import InlineButton from "../inlineButton/InlineButton";
 import SidebarSettingsNavLink from "./SidebarSettingsNavLink";
-import NewTopicModal from "../newTopicModal/NewTopicModal";
+import AddTopicModal from "../modals/AddTopicModal";
+import AddTaskModal from "../modals/AddTaskModal";
 
 function Sidebar() {
   const { activeTaskId } = useParams();
@@ -14,11 +21,36 @@ function Sidebar() {
   const [loadingTopicsUpdate, setLoadingTopicsUpdate] = useState(false);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [showNewTopicModal, setShowNewTopicModal] = useState<boolean>(false);
+  const [showNewTaskModal, setShowNewTaskModal] = useState<boolean>(false);
+  const [newTaskTopicId, setNewTaskTopicId] = useState<number | null>(null);
+  const addTaskCallback = (
+    title: string,
+    priority: TaskPriority
+  ) => {
+    if (newTaskTopicId != null) {
+      setLoadingTopicsUpdate(true);
+      addTask(
+        {
+          topicId: newTaskTopicId,
+          title: title,
+          priority: priority,
+        },
+        () => {
+          setShowNewTaskModal(false);
+          setLoadingTopicsUpdate(false);
+        },
+        (error) => {
+          console.log(error);
+          window.location.href = authenticationUrl;
+        }
+      );
+    }
+  };
   const addTopicCallback = (title: string) => {
     setLoadingTopicsUpdate(true);
     addTopic(
       title,
-      (data) => {
+      () => {
         setShowNewTopicModal(false);
         setLoadingTopicsUpdate(false);
       },
@@ -39,8 +71,8 @@ function Sidebar() {
         console.log(error);
         window.location.href = authenticationUrl;
       }
-    )
-  }
+    );
+  };
   useEffect(() => {
     if (!loadingTopicsUpdate || loadingTopics) {
       getTopics(
@@ -77,8 +109,10 @@ function Sidebar() {
   } else if (topics) {
     const sidebarItems = topics.map((item) => (
       <SidebarItem
+        setShowNewTaskModal={setShowNewTaskModal}
+        setNewTaskTopicId={setNewTaskTopicId}
         onDelete={deleteTopicCallback}
-        onUpdate={console.log}
+        onRename={console.log}
         activeTaskId={activeTaskId}
         eventKey={topics.indexOf(item).toString()}
         topic={item}
@@ -110,11 +144,17 @@ function Sidebar() {
           </Col>
         </Row>
         <Row className="overflow-y-scroll">{sidebarItems}</Row>
-        <NewTopicModal
+        <AddTopicModal
           show={showNewTopicModal}
           onHide={() => setShowNewTopicModal(false)}
           isLoading={loadingTopicsUpdate}
           onSubmit={addTopicCallback}
+        />
+        <AddTaskModal
+          show={showNewTaskModal}
+          onHide={() => setShowNewTaskModal(false)}
+          isLoading={loadingTopicsUpdate}
+          onSubmit={addTaskCallback}
         />
       </Container>
     );

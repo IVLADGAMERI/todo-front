@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import axios from "axios";
-import { Topic, UserDTO } from "./Types";
+import { AddTaskDTO, Task, Topic, UserDTO } from "./Types";
 
 export function getTopics(
   onSuccess: (data: Topic[]) => void,
@@ -18,15 +18,32 @@ export function getTopics(
 
 export function addTopic(
   title: string,
-  onSuccess: (data: Topic[]) => void,
+  onSuccess: () => void,
   onError: (error: AxiosError) => void
 ) {
   axios
     .post("http://localhost:8080/topic", { title }, { withCredentials: true })
-    .then((response) => {
-      onSuccess(response.data);
+    .then(() => {
+      onSuccess();
     })
     .catch((error) => {
+      onError(error);
+    });
+}
+
+export function addTask(
+  data: AddTaskDTO,
+  onSuccess: () => void,
+  onError: (error: AxiosError) => void
+) {
+  
+  axios
+    .post("http://localhost:8080/task", data, { withCredentials: true })
+    .then(() => {
+      onSuccess();
+    })
+    .catch((error) => {
+      console.log(data)
       onError(error);
     });
 }

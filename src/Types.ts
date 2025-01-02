@@ -14,5 +14,17 @@ export interface Topic {
 export interface UserDTO {
     login: string;
     imgUrl: string;
-    profileUrl: string
+    profileUrl: string;
+}
+
+export enum TaskPriority {
+    HIGH = "HIGH",
+    MEDIUM = "MEDIUM",
+    LOW = "LOW"
+}
+
+export interface AddTaskDTO {
+    title: string;
+    priority: TaskPriority;
+    topicId: number;
 }
