@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Sidebar from "./components/sidebar/Sidebar";
 import Main from "./components/Main";
 import UserInfo from "./components/UserInfo";
+import Task from "./components/task/Task";
 
 function App() {
   return (
@@ -14,7 +15,6 @@ function App() {
           index
           element={
             <Row className="d-flex flex-fill pt-4">
-              
               <Col xl={3} lg={4} xs={12}>
                 <Sidebar />
               </Col>
@@ -39,6 +39,18 @@ function App() {
             <Row className="d-flex flex-fill pt-4">
               <Col xl={3} lg={4} md={5} xs={12}>
                 <Sidebar />
+              </Col>
+              <Col
+                className="d-flex flex-column flex-fill pb-4"
+                xl={7}
+                lg={6}
+                md={12}
+                xs={10}
+              >
+                <Task />
+              </Col>
+              <Col xs={12} lg={2}>
+                <UserInfo />
               </Col>
             </Row>
           }
