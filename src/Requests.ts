@@ -1,6 +1,13 @@
 import { AxiosError } from "axios";
 import axios from "axios";
-import { AddTaskDTO, Task, Topic, UserDTO } from "./Types";
+import {
+  AddTaskDTO,
+  GetTaskFullDTO,
+  Task,
+  TaskFullDTO,
+  Topic,
+  UserDTO,
+} from "./Types";
 
 export function getTopics(
   onSuccess: (data: Topic[]) => void,
@@ -36,14 +43,13 @@ export function addTask(
   onSuccess: () => void,
   onError: (error: AxiosError) => void
 ) {
-  
   axios
     .post("http://localhost:8080/task", data, { withCredentials: true })
     .then(() => {
       onSuccess();
     })
     .catch((error) => {
-      console.log(data)
+      console.log(data);
       onError(error);
     });
 }
@@ -71,7 +77,27 @@ export function getUserInfo(
   onError: (error: AxiosError) => void
 ) {
   axios
-    .get("http://localhost:8080/user", { withCredentials: true })
+    .get("http://localhost:8080/user", {
+      withCredentials: true,
+    })
+    .then((response) => {
+      onSuccess(response.data);
+    })
+    .catch((error) => {
+      onError(error);
+    });
+}
+
+export function getTaskFull(
+  id: number,
+  onSuccess: (data: TaskFullDTO) => void,
+  onError: (error: AxiosError) => void
+) {
+  axios
+    .get("http://localhost:8080/task", {
+      params: { id: id },
+      withCredentials: true,
+    })
     .then((response) => {
       onSuccess(response.data);
     })

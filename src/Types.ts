@@ -5,6 +5,11 @@ export interface Task {
     priorityName: string;
 }
 
+export interface TaskFullDTO extends Task {
+    content: string,
+    createdAt: string
+}
+
 export interface Topic {
     id: number;
     title: number;
@@ -21,6 +26,10 @@ export enum TaskPriority {
     HIGH = "HIGH",
     MEDIUM = "MEDIUM",
     LOW = "LOW"
+}
+
+export interface GetTaskFullDTO {
+    id: number;
 }
 
 export interface AddTaskDTO {
