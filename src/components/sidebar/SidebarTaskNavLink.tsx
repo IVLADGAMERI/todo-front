@@ -16,7 +16,7 @@ function SidebarTaskNavLink(props: {
   return (
     <Col xs={12} className="mb-1 pe-0">
       <InlineButton
-        className="ps-3"
+        className="ps-3 w-100"
         onClick={onClick}
         isActive={
           !!(

@@ -8,7 +8,7 @@ function ChevronInlineButton(props: {
 }) {
   console.log(props.isActive);
   return (
-    <InlineButton isActive={false}>
+    <InlineButton className="w-100" isActive={false}>
       <h6 onClick={props.onClick} className="m-0">
         <i
           className={`bi bi-chevron-right me-1 ms-1 d-inline-block ${
