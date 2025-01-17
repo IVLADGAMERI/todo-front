@@ -5,7 +5,7 @@ function HomeNavLinkButton() {
   const navigate = useNavigate();
   return (
     <InlineButton
-      className="text-center rounded-circle p-2"
+      className="text-center rounded-3 p-2"
       onClick={() => {
         navigate("/");
       }}
