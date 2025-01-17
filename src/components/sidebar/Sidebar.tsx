@@ -14,6 +14,7 @@ import InlineButton from "../inlineButton/InlineButton";
 import SidebarSettingsNavLink from "./SidebarSettingsNavLink";
 import AddTopicModal from "../modals/AddTopicModal";
 import AddTaskModal from "../modals/AddTaskModal";
+import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 
 function Sidebar() {
   const { activeTaskId } = useParams();
@@ -99,9 +100,9 @@ function Sidebar() {
             <h5 className="text-start">Мои задачи</h5>
           </Col>
         </Row>
-        <Row className="d-flex flex-column justify-content-center align-items-center py-5">
+        <Row className="d-flex flex-column py-5">
           <Col>
-            <Spinner />
+            <SpinnerFlexFillBlock />
           </Col>
         </Row>
       </Container>
