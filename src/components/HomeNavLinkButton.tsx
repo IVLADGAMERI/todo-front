@@ -10,7 +10,9 @@ function HomeNavLinkButton() {
         navigate("/");
       }}
     >
-      <h3 className="m-0"><i className="bi bi-house-door" /></h3>
+      <h4 className="m-0">
+        <i className="bi bi-arrow-left"></i>
+      </h4>
     </InlineButton>
   );
 }
