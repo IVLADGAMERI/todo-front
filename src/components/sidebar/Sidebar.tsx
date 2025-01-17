@@ -26,7 +26,8 @@ function Sidebar() {
   const [newTaskTopicId, setNewTaskTopicId] = useState<number | null>(null);
   const addTaskCallback = (
     title: string,
-    priority: TaskPriority
+    priority: TaskPriority,
+    expiresAt?: string
   ) => {
     if (newTaskTopicId != null) {
       setLoadingTopicsUpdate(true);
@@ -35,6 +36,7 @@ function Sidebar() {
           topicId: newTaskTopicId,
           title: title,
           priority: priority,
+          expiresAt: expiresAt
         },
         () => {
           setShowNewTaskModal(false);

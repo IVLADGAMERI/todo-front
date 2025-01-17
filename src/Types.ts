@@ -7,7 +7,8 @@ export interface Task {
 
 export interface TaskFullDTO extends Task {
     content: string,
-    createdAt: string
+    createdAt: string,
+    expiresAt: string
 }
 
 export interface Topic {
@@ -36,4 +37,5 @@ export interface AddTaskDTO {
     title: string;
     priority: TaskPriority;
     topicId: number;
+    expiresAt?: string;
 }
