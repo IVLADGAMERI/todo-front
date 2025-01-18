@@ -7,7 +7,7 @@ function Clock() {
   useEffect(() => {
     const timerId = setInterval(() => {
       setDate(new Date());
-    }, 1000);
+    }, 200);
     return () => clearInterval(timerId);
   }, []);
   const secondsNumber = date.getSeconds();
