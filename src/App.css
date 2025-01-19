@@ -1,6 +1,6 @@
 .App {
   text-align: center;
   background-color: #202224;
-  font-family: "JetBrains Mono";
+  font-family: var(--font-family);
   letter-spacing: 0.05rem;
 }

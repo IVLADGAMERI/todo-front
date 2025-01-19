@@ -20,7 +20,7 @@ function NewTopicModal(props: {
     setValidated(true);
   };
   return (
-    <Modal show={props.show} onHide={props.onHide}>
+    <Modal show={props.show} onHide={props.onHide} style={{fontFamily: "var(--font-family)"}}>
       <Modal.Header closeButton>
         <Modal.Title>Новая тема</Modal.Title>
       </Modal.Header>
