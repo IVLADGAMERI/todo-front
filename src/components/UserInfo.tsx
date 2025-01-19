@@ -63,12 +63,7 @@ function UserInfo() {
           <Col xs={6} className="d-flex flex-row align-items-center">
             <a
               href={profileUrl}
-              style={{
-                display: "inline-block",
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
+              className="d-inline-block text-truncate"
             >
               {login}
             </a>
