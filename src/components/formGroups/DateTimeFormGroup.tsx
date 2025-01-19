@@ -11,8 +11,6 @@ function DateTimeFormGroup (props: {controlId: string, groupLabel: string, enabl
             const dateTime = dateInput+"T"+timeInput+":00";
             const date = new Date(dateTime);
             props.onChange(date);
-            setTimeInput("");
-            setDateInput("");
         }
     }, [dateInput, timeInput])
     return (
