@@ -5,6 +5,8 @@ import { TaskFullDTO } from "../../Types";
 import { authenticationUrl, getTaskFull } from "../../Requests";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import HomeNavLinkButton from "../HomeNavLinkButton";
+import TaskPriorityBlock from "./taskInfo/taskPriority/TaskPriorityBlock";
+import TaskInfo from "./taskInfo/TaskInfo";
 
 function Task() {
   const { activeTaskId } = useParams();
@@ -29,7 +31,7 @@ function Task() {
     }
   }, [activeTaskId, loading]);
   console.log(taskFull);
-  if (loading) {
+  if (loading || !taskFull) {
     return (
       <SpinnerFlexFillBlock />
     );
@@ -39,9 +41,17 @@ function Task() {
       className="d-flex flex-column flex-fill rounded-2 p-3 text-start"
       style={{ backgroundColor: "var(--block-bg)" }}
     >
-      <Row>
+      <Row className="w-100 d-flex flex-row justify-content-start align-items-center mb-2">
         <Col xs={1}>
           <HomeNavLinkButton />
+        </Col>
+        <Col xs={10}>
+          <h4 className="m-0 text-center">{taskFull?.title}</h4>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12}>
+          <TaskInfo data={taskFull} />
         </Col>
       </Row>
     </Container>

@@ -2,7 +2,7 @@ import { Task } from "../../Types";
 import { Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import InlineButton from "../inlineButton/InlineButton";
-import TaskStatus from "../taskStatus/TaskStatus";
+import TaskStatusIcon from "../taskStatus/TaskStatusIcon";
 
 function SidebarTaskNavLink(props: {
   task: Task;
@@ -26,7 +26,7 @@ function SidebarTaskNavLink(props: {
         }
       >
         <div className="d-flex flex-row">
-          <TaskStatus statusName={props.task.statusName} />
+          <TaskStatusIcon statusName={props.task.statusName} />
           {props.task.title}
         </div>
       </InlineButton>

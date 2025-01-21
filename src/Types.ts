@@ -33,6 +33,11 @@ export interface GetTaskFullDTO {
     id: number;
 }
 
+export enum TaskStatus {
+    ACTIVE = "ACTIVE",
+    FINISHED = "FINISHED"
+}
+
 export interface AddTaskDTO {
     title: string;
     priority: TaskPriority;
