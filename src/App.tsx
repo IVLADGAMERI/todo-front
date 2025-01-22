@@ -15,7 +15,7 @@ function App() {
           index
           element={
             <Row className="d-flex flex-fill pt-4">
-              <Col xl={3} lg={4} xs={12}>
+              <Col xl={3} lg={4} xs={12} className="d-flex flex-fill">
                 <Sidebar />
               </Col>
               <Col
@@ -37,13 +37,13 @@ function App() {
           path="/task/:activeTaskId"
           element={
             <Row className="d-flex flex-fill pt-4">
-              <Col xl={3} lg={4} md={5} xs={12}>
+              <Col xl={3} lg={4} md={5} xs={12} className="d-flex flex-fill">
                 <Sidebar />
               </Col>
               <Col
                 className="d-flex flex-column flex-fill pb-4"
                 xl={7}
-                lg={6}
+                lg={5}
                 md={12}
                 xs={10}
               >
