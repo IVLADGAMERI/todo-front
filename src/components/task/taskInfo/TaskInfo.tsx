@@ -12,7 +12,7 @@ function TaskInfo(props: { data: TaskFullDTO }) {
     ? new Date(props.data.expiresAt)
     : null;
   return (
-    <Container className="px-3">
+    <Container>
       <Row>
         <Col xs={4} className="border-end border-start">
           <TaskCreatedAtBlock createdAt={createdAt} />
