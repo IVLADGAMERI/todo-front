@@ -15,6 +15,7 @@ import SidebarSettingsNavLink from "./SidebarSettingsNavLink";
 import AddTopicModal from "../modals/AddTopicModal";
 import AddTaskModal from "../modals/AddTaskModal";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
+import EmptySidebarItemsBLock from "./EmptySidebarItemsBlock";
 
 function Sidebar() {
   const { activeTaskId } = useParams();
@@ -110,7 +111,7 @@ function Sidebar() {
       </Container>
     );
   } else if (topics) {
-    const sidebarItems = topics.map((item) => (
+    const sidebarItems = topics.length === 0 ? <EmptySidebarItemsBLock /> : topics.map((item) => (
       <SidebarItem
         setShowNewTaskModal={setShowNewTaskModal}
         setNewTaskTopicId={setNewTaskTopicId}
@@ -130,11 +131,11 @@ function Sidebar() {
           overflowY: "hidden",
         }}
       >
-        <Row className="mb-2 d-flex align-items-center">
+        <Row className="mb-2 d-flex align-items-center border-bottom pb-2">
           <Col xs={9}>
-            <h5 className="text-start">Мои задачи</h5>
+            <h5 className="text-start mb-0">Мои задачи</h5>
           </Col>
-          <Col xs={3} className="d-flex flex-row align-items-center">
+          <Col xs={3} className="d-flex flex-row align-items-center justify-content-end">
             <InlineButton
               className="text-center rounded-3 me-1"
               onClick={() => {
@@ -146,7 +147,7 @@ function Sidebar() {
             <SidebarSettingsNavLink />
           </Col>
         </Row>
-        <Row className="overflow-y-scroll">{sidebarItems}</Row>
+        <Row className="overflow-y-scroll d-flex">{sidebarItems}</Row>
         <AddTopicModal
           show={showNewTopicModal}
           onHide={() => setShowNewTopicModal(false)}
