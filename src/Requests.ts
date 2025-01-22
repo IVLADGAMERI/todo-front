@@ -6,6 +6,7 @@ import {
   Task,
   TaskFullDTO,
   Topic,
+  UpdateTaskContentDTO,
   UserDTO,
 } from "./Types";
 
@@ -98,6 +99,21 @@ export function getTaskFull(
       params: { id: id },
       withCredentials: true,
     })
+    .then((response) => {
+      onSuccess(response.data);
+    })
+    .catch((error) => {
+      onError(error);
+    });
+}
+
+export function updateTaskContent(
+  data: UpdateTaskContentDTO,
+  onSuccess: (data: TaskFullDTO) => void,
+  onError: (error: AxiosError) => void
+) {
+  axios
+    .put("http://localhost:8080/task/content", data, { withCredentials: true })
     .then((response) => {
       onSuccess(response.data);
     })

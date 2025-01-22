@@ -38,6 +38,11 @@ export enum TaskStatus {
     FINISHED = "FINISHED"
 }
 
+export interface UpdateTaskContentDTO {
+    taskId: number,
+    newContent: string
+}
+
 export interface AddTaskDTO {
     title: string;
     priority: TaskPriority;
