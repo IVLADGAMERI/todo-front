@@ -29,7 +29,7 @@ function SidebarItem(props: {
   };
   console.log(props.topic)
   return (
-    <Col xs={12} className="text-start mb-1 mx-0">
+    <Col xs={12} className="text-start mb-1 mx-0 ps-0">
       <Accordion activeKey={activeKey} onSelect={(key) => setActiveKey(key)}>
         <Container>
           <Row className="d-flex align-items-center">
