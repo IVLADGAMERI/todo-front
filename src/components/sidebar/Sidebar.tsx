@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Col, Container, Row, Spinner } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { Topic, TaskPriority } from "../../Types";
 import {
   authenticationUrl,
@@ -17,10 +17,9 @@ import AddTaskModal from "../modals/AddTaskModal";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import EmptySidebarItemsBLock from "./EmptySidebarItemsBlock";
 
-function Sidebar() {
+function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boolean) => void}) {
   const { activeTaskId } = useParams();
   const [loadingTopics, setLoadingTopics] = useState(true);
-  const [loadingTopicsUpdate, setLoadingTopicsUpdate] = useState(false);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [showNewTopicModal, setShowNewTopicModal] = useState<boolean>(false);
   const [showNewTaskModal, setShowNewTaskModal] = useState<boolean>(false);
@@ -31,7 +30,7 @@ function Sidebar() {
     expiresAt?: string
   ) => {
     if (newTaskTopicId != null) {
-      setLoadingTopicsUpdate(true);
+      props.setLoadingUpdate(true);
       addTask(
         {
           topicId: newTaskTopicId,
@@ -41,7 +40,7 @@ function Sidebar() {
         },
         () => {
           setShowNewTaskModal(false);
-          setLoadingTopicsUpdate(false);
+          props.setLoadingUpdate(false);
         },
         (error) => {
           console.log(error);
@@ -51,12 +50,12 @@ function Sidebar() {
     }
   };
   const addTopicCallback = (title: string) => {
-    setLoadingTopicsUpdate(true);
+    props.setLoadingUpdate(true);
     addTopic(
       title,
       () => {
         setShowNewTopicModal(false);
-        setLoadingTopicsUpdate(false);
+        props.setLoadingUpdate(false);
       },
       (error) => {
         console.log(error);
@@ -65,11 +64,11 @@ function Sidebar() {
     );
   };
   const deleteTopicCallback = (event: any, id: number) => {
-    setLoadingTopicsUpdate(true);
+    props.setLoadingUpdate(true);
     deleteTopic(
       id,
       (data) => {
-        setLoadingTopicsUpdate(false);
+        props.setLoadingUpdate(false);
       },
       (error) => {
         console.log(error);
@@ -78,7 +77,7 @@ function Sidebar() {
     );
   };
   useEffect(() => {
-    if (!loadingTopicsUpdate || loadingTopics) {
+    if (!props.loadingUpdate || loadingTopics) {
       getTopics(
         (data) => {
           setTopics(data);
@@ -90,7 +89,7 @@ function Sidebar() {
         }
       );
     }
-  }, [loadingTopicsUpdate, loadingTopics]);
+  }, [props.loadingUpdate, loadingTopics]);
   if (loadingTopics) {
     return (
       <Container
@@ -151,13 +150,13 @@ function Sidebar() {
         <AddTopicModal
           show={showNewTopicModal}
           onHide={() => setShowNewTopicModal(false)}
-          isLoading={loadingTopicsUpdate}
+          isLoading={props.loadingUpdate}
           onSubmit={addTopicCallback}
         />
         <AddTaskModal
           show={showNewTaskModal}
           onHide={() => setShowNewTaskModal(false)}
-          isLoading={loadingTopicsUpdate}
+          isLoading={props.loadingUpdate}
           onSubmit={addTaskCallback}
         />
       </Container>

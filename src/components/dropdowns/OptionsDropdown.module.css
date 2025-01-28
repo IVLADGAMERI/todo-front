@@ -1,0 +1,24 @@
+.customDropdownToggle::after {
+    display: none;
+}
+
+.customDropdownToggle, .customDropdownToggle:active, .customDropdownToggle.show {
+    background-color: var(--block-hover);
+    box-shadow: none;
+}
+
+.customDropdownToggle {
+    background: transparent;
+}
+
+.customDropdownToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+.customDropdownToggle:hover {
+    background-color: var(--block-hover);
+}
+

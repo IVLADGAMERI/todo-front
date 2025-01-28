@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TaskFullDTO } from "../../Types";
 import {
   authenticationUrl,
+  deleteTaskById,
   getTaskFull,
   updateTaskContent,
 } from "../../Requests";
@@ -11,9 +12,9 @@ import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import HomeNavLinkButton from "./HomeNavLinkButton";
 import TaskInfo from "./taskInfo/TaskInfo";
 import TaskContentEditor from "./taskContentEditor/TaskContentEditor";
-import SaveContentButton from "./SaveContentButton";
+import TaskOptionsDropdown from "./TaskOptionsDropdown";
 
-function Task() {
+function Task(props: {setLoadingTopicsUpdate: (value: boolean) => void}) {
   const { activeTaskId } = useParams();
   const activeTaskIdNumber = activeTaskId
     ? Number.parseInt(activeTaskId)
@@ -23,6 +24,7 @@ function Task() {
   const [taskFull, setTaskFull] = useState<TaskFullDTO | null>(null);
   const [content, setContent] = useState<string>("");
   const [isChanged, setChanged] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     if (activeTaskIdNumber != null && !loadingContentUpdate) {
       getTaskFull(
@@ -58,6 +60,22 @@ function Task() {
       );
     }
   };
+
+  const deleteTaskCallback = () => {
+    if (activeTaskIdNumber) {
+      props.setLoadingTopicsUpdate(true);
+      deleteTaskById(
+        { id: activeTaskIdNumber },
+        () => {
+          props.setLoadingTopicsUpdate(false);
+          navigate("/");
+        },
+        () => {
+          window.location.href = authenticationUrl;
+        }
+      );
+    }
+  };
   return (
     <Container
       className="d-flex flex-column align-items-center w-100 flex-fill rounded-2 p-3 text-start"
@@ -71,7 +89,12 @@ function Task() {
           <h4 className="m-0 text-center">{taskFull?.title}</h4>
         </Col>
         <Col xs={1}>
-          <SaveContentButton disabled={!isChanged} onClick={updateTaskContentCallback} />
+          <TaskOptionsDropdown
+            isSaveLoading={loadingContentUpdate}
+            isSaved={!isChanged}
+            onDelete={deleteTaskCallback}
+            onSave={updateTaskContentCallback}
+          />
         </Col>
       </Row>
       <Row className="mb-3 w-100">

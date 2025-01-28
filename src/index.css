@@ -6,6 +6,7 @@ body {
 
 :root {
   --block-bg: #292d30;
+  --block-hover: rgba(255, 255, 255, 0.15);
   --font-family: JetBrains Mono;
 }
 

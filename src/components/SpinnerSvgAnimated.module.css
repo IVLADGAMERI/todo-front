@@ -1,0 +1,16 @@
+.spinner {
+    display: inline-block;
+    animation: spinner infinite 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotateZ(0deg);
+    }
+    80% {
+        transform: rotateZ(360deg);
+    }
+    100% {
+        transform: rotateZ(360deg);
+    }
+}

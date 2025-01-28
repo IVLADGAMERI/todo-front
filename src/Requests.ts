@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import axios from "axios";
 import {
   AddTaskDTO,
+  DeleteTaskDTO,
   GetTaskFullDTO,
   Task,
   TaskFullDTO,
@@ -120,6 +121,20 @@ export function updateTaskContent(
     .catch((error) => {
       onError(error);
     });
+}
+
+export function deleteTaskById(
+  data: DeleteTaskDTO,
+  onSuccess: () => void,
+  onError: (error: AxiosError) => void
+) {
+  axios.delete("http://localhost:8080/task", {data: data, withCredentials: true})
+  .then(() => {
+    onSuccess();
+  })
+  .catch((error) => {
+    onError(error);
+  })
 }
 
 export const authenticationUrl =
