@@ -47,6 +47,13 @@ export interface DeleteTaskDTO {
     id: number;
 }
 
+export interface UpdateTaskInfoDTO {
+    id: number,
+    newTitle: string,
+    newPriority: TaskPriority,
+    newExpiresAt?: string | null
+}
+
 export interface AddTaskDTO {
     title: string;
     priority: TaskPriority;

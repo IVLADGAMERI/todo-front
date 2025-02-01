@@ -8,6 +8,7 @@ import {
   TaskFullDTO,
   Topic,
   UpdateTaskContentDTO,
+  UpdateTaskInfoDTO,
   UserDTO,
 } from "./Types";
 
@@ -129,6 +130,20 @@ export function deleteTaskById(
   onError: (error: AxiosError) => void
 ) {
   axios.delete("http://localhost:8080/task", {data: data, withCredentials: true})
+  .then(() => {
+    onSuccess();
+  })
+  .catch((error) => {
+    onError(error);
+  })
+}
+
+export function updateTaskInfo(
+  data: UpdateTaskInfoDTO,
+  onSuccess: () => void,
+  onError: (error: AxiosError) => void
+) {
+  axios.put("http://localhost:8080/task/info", data, {withCredentials: true})
   .then(() => {
     onSuccess();
   })

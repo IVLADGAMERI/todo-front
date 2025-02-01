@@ -1,5 +1,5 @@
 import OptionsDropdown from "../dropdowns/OptionsDropdown";
-import { Dropdown, Spinner } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import SpinnerSvgAnimated from "../SpinnerSvgAnimated";
 
 function TaskOptionsDropdown(props: {
@@ -7,6 +7,7 @@ function TaskOptionsDropdown(props: {
   isSaveLoading: boolean;
   onDelete: (event: any) => void;
   onSave: (event: any) => void;
+  onEdit: (event: any) => void;
 }) {
   const saveItem = (
     <Dropdown.Item onClick={props.onSave}>
@@ -29,12 +30,16 @@ function TaskOptionsDropdown(props: {
   );
   return (
     <OptionsDropdown>
+      <Dropdown.Item onClick={props.onEdit}>
+        <i className="bi bi-pencil me-2" />
+        Изменить
+      </Dropdown.Item>
       {props.isSaveLoading
         ? saveLoadingItem
         : props.isSaved
         ? savedItem
         : saveItem}
-      <Dropdown.Divider></Dropdown.Divider>
+      <Dropdown.Divider />
       <Dropdown.Item className="text-danger" onClick={props.onDelete}>
         <i className="bi bi-trash3 me-2" />
         Удалить

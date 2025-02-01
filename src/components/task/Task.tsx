@@ -1,32 +1,39 @@
 import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { TaskFullDTO } from "../../Types";
+import { TaskFullDTO, TaskPriority } from "../../Types";
 import {
   authenticationUrl,
   deleteTaskById,
   getTaskFull,
   updateTaskContent,
+  updateTaskInfo,
 } from "../../Requests";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import HomeNavLinkButton from "./HomeNavLinkButton";
 import TaskInfo from "./taskInfo/TaskInfo";
 import TaskContentEditor from "./taskContentEditor/TaskContentEditor";
 import TaskOptionsDropdown from "./TaskOptionsDropdown";
+import EditTaskModal from "../modals/EditTaskModal";
 
-function Task(props: {setLoadingTopicsUpdate: (value: boolean) => void}) {
+function Task(props: {
+  setLoadingTopicsUpdate: (value: boolean) => void;
+  loadingTopicsUpdate: boolean;
+}) {
   const { activeTaskId } = useParams();
   const activeTaskIdNumber = activeTaskId
     ? Number.parseInt(activeTaskId)
     : null;
   const [loading, setLoading] = useState(true);
-  const [loadingContentUpdate, setLoadingContentUpdate] = useState(false);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [taskFull, setTaskFull] = useState<TaskFullDTO | null>(null);
   const [content, setContent] = useState<string>("");
-  const [isChanged, setChanged] = useState(false);
+  const [isContentChanged, setIsContentChanged] = useState(false);
+  const [showUpdateTaskInfoModal, setShowUpdateTaskInfoModal] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   useEffect(() => {
-    if (activeTaskIdNumber != null && !loadingContentUpdate) {
+    if (activeTaskIdNumber != null && !loadingUpdate) {
       getTaskFull(
         activeTaskIdNumber,
         (data) => {
@@ -40,27 +47,42 @@ function Task(props: {setLoadingTopicsUpdate: (value: boolean) => void}) {
         }
       );
     }
-  }, [activeTaskId, loading, loadingContentUpdate]);
+  }, [activeTaskIdNumber, loading, loadingUpdate]);
   if (loading || !taskFull) {
     return <SpinnerFlexFillBlock />;
   }
   const updateTaskContentCallback = () => {
-    if (activeTaskIdNumber && isChanged) {
-      setLoadingContentUpdate(true);
+    if (activeTaskIdNumber && isContentChanged) {
+      setLoadingUpdate(true);
       updateTaskContent(
         { taskId: activeTaskIdNumber, newContent: content },
         () => {
-          setLoadingContentUpdate(false);
-          setChanged(false);
+          setLoadingUpdate(false);
+          setIsContentChanged(false);
         },
         () => {
-          setLoadingContentUpdate(false);
+          setLoadingUpdate(false);
           window.location.href = authenticationUrl;
         }
       );
     }
   };
-
+  const updateTaskInfoCallback = (newTitle: string, newPriority: TaskPriority, newExpiresAt?: string | null) => {
+    if (activeTaskIdNumber) {
+      props.setLoadingTopicsUpdate(true);
+      updateTaskInfo({id: activeTaskIdNumber, newTitle: newTitle, newPriority: newPriority, newExpiresAt: newExpiresAt},
+        () => {
+          props.setLoadingTopicsUpdate(false);
+          setShowUpdateTaskInfoModal(false);
+        },
+        () => {
+          setShowUpdateTaskInfoModal(false);
+          props.setLoadingTopicsUpdate(false);
+          window.location.href = authenticationUrl;
+        }
+      )
+    }
+  };
   const deleteTaskCallback = () => {
     if (activeTaskIdNumber) {
       props.setLoadingTopicsUpdate(true);
@@ -90,8 +112,11 @@ function Task(props: {setLoadingTopicsUpdate: (value: boolean) => void}) {
         </Col>
         <Col xs={1}>
           <TaskOptionsDropdown
-            isSaveLoading={loadingContentUpdate}
-            isSaved={!isChanged}
+            isSaveLoading={loadingUpdate}
+            isSaved={!isContentChanged}
+            onEdit={() => {
+              setShowUpdateTaskInfoModal(true);
+            }}
             onDelete={deleteTaskCallback}
             onSave={updateTaskContentCallback}
           />
@@ -109,11 +134,22 @@ function Task(props: {setLoadingTopicsUpdate: (value: boolean) => void}) {
             onBlur={updateTaskContentCallback}
             onChange={(event) => {
               setContent(event.target.value);
-              setChanged(event.target.value !== taskFull.content);
+              setIsContentChanged(event.target.value !== taskFull.content);
             }}
           />
         </Col>
       </Row>
+      <EditTaskModal
+        show={showUpdateTaskInfoModal}
+        onHide={() => setShowUpdateTaskInfoModal(false)}
+        isLoading={props.loadingTopicsUpdate}
+        onSubmit={updateTaskInfoCallback}
+        data={{
+          title: taskFull.title,
+          priority: taskFull.priorityName as TaskPriority,
+          expiresAt: taskFull.expiresAt,
+        }}
+      />
     </Container>
   );
 }

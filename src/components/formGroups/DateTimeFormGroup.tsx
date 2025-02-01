@@ -1,23 +1,43 @@
 import { FormGroup } from "react-bootstrap";
 import { Form, Container, Row, Col } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
 
 function DateTimeFormGroup(props: {
   controlId: string;
   groupLabel: string;
   enableSwitchLabel: string;
-  onChange: (date: Date) => void;
+  value?: Date | null;
+  onChange: (date: Date | null) => void;
 }) {
-  const [dateInput, setDateInput] = useState("");
-  const [timeInput, setTimeInput] = useState("");
+  const propsValueDateString = props.value
+    ? format(props.value, "yyyy-MM-dd")
+    : "";
+  const propsValueTimeString = props.value
+    ? props.value.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "";
+  console.log(propsValueDateString);
+  console.log(propsValueTimeString);
+  const [dateInput, setDateInput] = useState(propsValueDateString);
+  const [timeInput, setTimeInput] = useState(propsValueTimeString);
+  console.log(dateInput);
+  console.log(timeInput);
   const [isEnabled, setIsEnabled] = useState(true);
   useEffect(() => {
+    if (!isEnabled) {
+      setDateInput("");
+      setTimeInput("");
+      props.onChange(null);
+    }
     if (dateInput.length !== 0 && timeInput.length !== 0) {
       const dateTime = dateInput + "T" + timeInput + ":00";
       const date = new Date(dateTime);
       props.onChange(date);
     }
-  }, [dateInput, timeInput]);
+  }, [dateInput, timeInput, isEnabled]);
   return (
     <FormGroup controlId={props.controlId}>
       <Form.Label>{props.groupLabel}</Form.Label>

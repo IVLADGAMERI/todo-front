@@ -1,6 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
 import TaskPriorityBlock from "./taskPriority/TaskPriorityBlock";
-import { TaskFullDTO, TaskStatus } from "../../../Types";
+import { TaskFullDTO, TaskPriority, TaskStatus } from "../../../Types";
 import TaskCreatedAtBlock from "./taskCreatedAt/TaskCreatedAtBlock";
 import TaskExpiresAtBlock from "./taskExpiresAt/TaskExpiresAtBlock";
 import TaskStatusBlock from "./taskStatus/TaskStatusBlock";
@@ -18,7 +18,7 @@ function TaskInfo(props: { data: TaskFullDTO }) {
           <TaskCreatedAtBlock createdAt={createdAt} />
         </Col>
         <Col xs={4} className="border-end">
-          <TaskPriorityBlock priorityName={props.data.priorityName} />
+          <TaskPriorityBlock priority={props.data.priorityName as TaskPriority} />
         </Col>
         <Col xs={4} className="border-end">
           {isFinished || !expiresAt ? (

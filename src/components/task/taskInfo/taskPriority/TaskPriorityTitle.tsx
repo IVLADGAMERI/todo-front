@@ -1,9 +1,9 @@
 import { ReactElement } from "react";
 import { TaskPriority } from "../../../../Types";
 
-function TaskPriorityTitle(props: { priorityName: string, className?: string }) {
+function TaskPriorityTitle(props: { priority: TaskPriority, className?: string }) {
   let title: ReactElement<HTMLHeadingElement>;
-  switch (props.priorityName) {
+  switch (props.priority) {
     case TaskPriority.HIGH:
       title = <h6 className={`text-danger mb-0 ${props.className}`}>Высокий</h6>;
       break;

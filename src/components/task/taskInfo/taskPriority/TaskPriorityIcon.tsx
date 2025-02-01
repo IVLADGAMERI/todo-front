@@ -1,8 +1,8 @@
 import { TaskPriority } from "../../../../Types";
 
-function TaskPriorityIcon(props: { priorityName: string; className?: string }) {
+function TaskPriorityIcon(props: { priority: TaskPriority; className?: string }) {
   let icon;
-  switch (props.priorityName) {
+  switch (props.priority) {
     case TaskPriority.HIGH:
       icon = (
         <i
