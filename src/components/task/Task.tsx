@@ -33,7 +33,7 @@ function Task(props: {
     useState<boolean>(false);
   const navigate = useNavigate();
   useEffect(() => {
-    if (activeTaskIdNumber != null && !loadingUpdate) {
+    if (activeTaskIdNumber != null && !loadingUpdate && !props.loadingTopicsUpdate) {
       getTaskFull(
         activeTaskIdNumber,
         (data) => {
@@ -47,7 +47,7 @@ function Task(props: {
         }
       );
     }
-  }, [activeTaskIdNumber, loading, loadingUpdate]);
+  }, [activeTaskIdNumber, loading, loadingUpdate, props.loadingTopicsUpdate]);
   if (loading || !taskFull) {
     return <SpinnerFlexFillBlock />;
   }
@@ -69,17 +69,32 @@ function Task(props: {
   };
   const updateTaskInfoCallback = (newTitle: string, newPriority: TaskPriority, newExpiresAt?: string | null) => {
     if (activeTaskIdNumber) {
-      props.setLoadingTopicsUpdate(true);
-      updateTaskInfo({id: activeTaskIdNumber, newTitle: newTitle, newPriority: newPriority, newExpiresAt: newExpiresAt},
-        () => {
+      let onSuccess = () => {
+        setLoadingUpdate(false);
+        setShowUpdateTaskInfoModal(false);
+      };
+      let onError = () => {
+        setLoadingUpdate(false);
+        setShowUpdateTaskInfoModal(false);
+        window.location.href = authenticationUrl;
+      }
+      if (newTitle !== taskFull.title) {
+        props.setLoadingTopicsUpdate(true);
+        onSuccess = () => {
           props.setLoadingTopicsUpdate(false);
           setShowUpdateTaskInfoModal(false);
-        },
-        () => {
-          setShowUpdateTaskInfoModal(false);
+        }
+        onError = () => {
           props.setLoadingTopicsUpdate(false);
+          setShowUpdateTaskInfoModal(false);
           window.location.href = authenticationUrl;
         }
+      } else {
+        setLoadingUpdate(true);
+      }
+      updateTaskInfo({id: activeTaskIdNumber, newTitle: newTitle, newPriority: newPriority, newExpiresAt: newExpiresAt},
+        onSuccess,
+        onError
       )
     }
   };
