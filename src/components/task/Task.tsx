@@ -82,6 +82,7 @@ function Task(props: {
         props.setLoadingTopicsUpdate(true);
         onSuccess = () => {
           props.setLoadingTopicsUpdate(false);
+
           setShowUpdateTaskInfoModal(false);
         }
         onError = () => {
