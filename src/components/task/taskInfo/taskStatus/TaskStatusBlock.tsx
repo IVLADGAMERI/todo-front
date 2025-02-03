@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import TaskStatusIcon from "../../../taskStatus/TaskStatusIcon";
+import TaskStatusIcon from "../../taskStatus/TaskStatusIcon";
 import { TaskStatus } from "../../../../Types";
 
 function TaskStatusBlock(props: { isFinished: boolean }) {

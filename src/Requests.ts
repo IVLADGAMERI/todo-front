@@ -12,6 +12,10 @@ import {
   UserDTO,
 } from "./Types";
 
+export function onUnauthorizedErrorDefault() {
+  window.location.href = authenticationUrl;
+}
+
 export function getTopics(
   onSuccess: (data: Topic[]) => void,
   onError: (error: AxiosError) => void

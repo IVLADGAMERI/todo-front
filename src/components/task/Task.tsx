@@ -3,9 +3,9 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { TaskFullDTO, TaskPriority } from "../../Types";
 import {
-  authenticationUrl,
   deleteTaskById,
   getTaskFull,
+  onUnauthorizedErrorDefault,
   updateTaskContent,
   updateTaskInfo,
 } from "../../Requests";
@@ -15,6 +15,7 @@ import TaskInfo from "./taskInfo/TaskInfo";
 import TaskContentEditor from "./taskContentEditor/TaskContentEditor";
 import TaskOptionsDropdown from "./TaskOptionsDropdown";
 import EditTaskModal from "../modals/EditTaskModal";
+import { AxiosError } from "axios";
 
 function Task(props: {
   setLoadingTopicsUpdate: (value: boolean) => void;
@@ -33,7 +34,11 @@ function Task(props: {
     useState<boolean>(false);
   const navigate = useNavigate();
   useEffect(() => {
-    if (activeTaskIdNumber != null && !loadingUpdate && !props.loadingTopicsUpdate) {
+    if (
+      activeTaskIdNumber != null &&
+      !loadingUpdate &&
+      !props.loadingTopicsUpdate
+    ) {
       getTaskFull(
         activeTaskIdNumber,
         (data) => {
@@ -43,7 +48,9 @@ function Task(props: {
         },
         (error) => {
           console.log(error);
-          window.location.href = authenticationUrl;
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          }
         }
       );
     }
@@ -60,43 +67,59 @@ function Task(props: {
           setLoadingUpdate(false);
           setIsContentChanged(false);
         },
-        () => {
+        (error) => {
           setLoadingUpdate(false);
-          window.location.href = authenticationUrl;
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          }
         }
       );
     }
   };
-  const updateTaskInfoCallback = (newTitle: string, newPriority: TaskPriority, newExpiresAt?: string | null) => {
+  const updateTaskInfoCallback = (
+    newTitle: string,
+    newPriority: TaskPriority,
+    newExpiresAt?: string | null
+  ) => {
     if (activeTaskIdNumber) {
       let onSuccess = () => {
         setLoadingUpdate(false);
         setShowUpdateTaskInfoModal(false);
       };
-      let onError = () => {
+      let onError = (error: AxiosError) => {
         setLoadingUpdate(false);
         setShowUpdateTaskInfoModal(false);
-        window.location.href = authenticationUrl;
-      }
+        if (error.status === 401) {
+          onUnauthorizedErrorDefault();
+        }
+      };
       if (newTitle !== taskFull.title) {
         props.setLoadingTopicsUpdate(true);
         onSuccess = () => {
           props.setLoadingTopicsUpdate(false);
 
           setShowUpdateTaskInfoModal(false);
-        }
-        onError = () => {
+        };
+        onError = (error) => {
           props.setLoadingTopicsUpdate(false);
           setShowUpdateTaskInfoModal(false);
-          window.location.href = authenticationUrl;
-        }
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          }
+        };
       } else {
         setLoadingUpdate(true);
       }
-      updateTaskInfo({id: activeTaskIdNumber, newTitle: newTitle, newPriority: newPriority, newExpiresAt: newExpiresAt},
+      updateTaskInfo(
+        {
+          id: activeTaskIdNumber,
+          newTitle: newTitle,
+          newPriority: newPriority,
+          newExpiresAt: newExpiresAt,
+        },
         onSuccess,
         onError
-      )
+      );
     }
   };
   const deleteTaskCallback = () => {
@@ -108,8 +131,10 @@ function Task(props: {
           props.setLoadingTopicsUpdate(false);
           navigate("/");
         },
-        () => {
-          window.location.href = authenticationUrl;
+        (error) => {
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          }
         }
       );
     }

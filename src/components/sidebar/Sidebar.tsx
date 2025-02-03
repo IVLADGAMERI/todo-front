@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { Topic, TaskPriority } from "../../Types";
 import {
-  authenticationUrl,
   getTopics,
   addTopic,
   deleteTopic,
   addTask,
+  onUnauthorizedErrorDefault,
 } from "../../Requests";
 import SidebarItem from "./SidebarItem";
 import { useParams } from "react-router-dom";
@@ -17,7 +17,10 @@ import AddTaskModal from "../modals/AddTaskModal";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import EmptySidebarItemsBLock from "./EmptySidebarItemsBlock";
 
-function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boolean) => void}) {
+function Sidebar(props: {
+  loadingUpdate: boolean;
+  setLoadingUpdate: (value: boolean) => void;
+}) {
   const { activeTaskId } = useParams();
   const [loadingTopics, setLoadingTopics] = useState(true);
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -36,7 +39,7 @@ function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boole
           topicId: newTaskTopicId,
           title: title,
           priority: priority,
-          expiresAt: expiresAt
+          expiresAt: expiresAt,
         },
         () => {
           setShowNewTaskModal(false);
@@ -44,7 +47,9 @@ function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boole
         },
         (error) => {
           console.log(error);
-          window.location.href = authenticationUrl;
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          }
         }
       );
     }
@@ -59,7 +64,9 @@ function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boole
       },
       (error) => {
         console.log(error);
-        window.location.href = authenticationUrl;
+        if (error.status === 401) {
+          onUnauthorizedErrorDefault();
+        }
       }
     );
   };
@@ -72,7 +79,9 @@ function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boole
       },
       (error) => {
         console.log(error);
-        window.location.href = authenticationUrl;
+        if (error.status === 401) {
+          onUnauthorizedErrorDefault();
+        }
       }
     );
   };
@@ -85,7 +94,9 @@ function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boole
         },
         (error) => {
           console.log(error);
-          window.location.href = authenticationUrl;
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          }
         }
       );
     }
@@ -110,17 +121,22 @@ function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boole
       </Container>
     );
   } else if (topics) {
-    const sidebarItems = topics.length === 0 ? <EmptySidebarItemsBLock /> : topics.map((item) => (
-      <SidebarItem
-        setShowNewTaskModal={setShowNewTaskModal}
-        setNewTaskTopicId={setNewTaskTopicId}
-        onDelete={deleteTopicCallback}
-        onRename={console.log}
-        activeTaskId={activeTaskId}
-        eventKey={topics.indexOf(item).toString()}
-        topic={item}
-      />
-    ));
+    const sidebarItems =
+      topics.length === 0 ? (
+        <EmptySidebarItemsBLock />
+      ) : (
+        topics.map((item) => (
+          <SidebarItem
+            setShowNewTaskModal={setShowNewTaskModal}
+            setNewTaskTopicId={setNewTaskTopicId}
+            onDelete={deleteTopicCallback}
+            onRename={console.log}
+            activeTaskId={activeTaskId}
+            eventKey={topics.indexOf(item).toString()}
+            topic={item}
+          />
+        ))
+      );
     return (
       <Container
         className="d-flex flex-column rounded-3 p-3"
@@ -134,7 +150,10 @@ function Sidebar(props: {loadingUpdate: boolean, setLoadingUpdate: (value: boole
           <Col xs={9}>
             <h5 className="text-start mb-0">Мои задачи</h5>
           </Col>
-          <Col xs={3} className="d-flex flex-row align-items-center justify-content-end">
+          <Col
+            xs={3}
+            className="d-flex flex-row align-items-center justify-content-end"
+          >
             <InlineButton
               className="text-center rounded-3 me-1"
               onClick={() => {

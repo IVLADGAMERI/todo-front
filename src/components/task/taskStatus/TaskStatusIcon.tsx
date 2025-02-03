@@ -1,4 +1,4 @@
-import { TaskStatus } from "../../Types";
+import { TaskStatus } from "../../../Types";
 
 function TaskStatusIcon(props: {statusName: string}) {
     const status =

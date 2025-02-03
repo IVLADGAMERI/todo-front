@@ -7,7 +7,7 @@ import {
   Placeholder,
   Row,
 } from "react-bootstrap";
-import { authenticationUrl, getUserInfo, logoutUrl } from "../Requests";
+import { getUserInfo, logoutUrl, onUnauthorizedErrorDefault } from "../Requests";
 import { UserDTO } from "../Types";
 
 function UserInfo() {
@@ -25,7 +25,9 @@ function UserInfo() {
       },
       (error) => {
         console.log(error);
-        window.location.href = authenticationUrl;
+        if (error.status === 401) {
+          onUnauthorizedErrorDefault();
+        }
       }
     );
   }, [loading]);

@@ -19,12 +19,8 @@ function DateTimeFormGroup(props: {
         minute: "2-digit",
       })
     : "";
-  console.log(propsValueDateString);
-  console.log(propsValueTimeString);
   const [dateInput, setDateInput] = useState(propsValueDateString);
   const [timeInput, setTimeInput] = useState(propsValueTimeString);
-  console.log(dateInput);
-  console.log(timeInput);
   const [isEnabled, setIsEnabled] = useState(true);
   useEffect(() => {
     if (!isEnabled) {
