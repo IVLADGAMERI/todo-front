@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { Topic, TaskPriority } from "../../Types";
 import {
@@ -16,6 +16,7 @@ import AddTopicModal from "../modals/AddTopicModal";
 import AddTaskModal from "../modals/AddTaskModal";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import EmptySidebarItemsBLock from "./EmptySidebarItemsBlock";
+import { RequestErrorToastContext } from "../RequestErrorToastContext";
 
 function Sidebar(props: {
   loadingUpdate: boolean;
@@ -27,6 +28,7 @@ function Sidebar(props: {
   const [showNewTopicModal, setShowNewTopicModal] = useState<boolean>(false);
   const [showNewTaskModal, setShowNewTaskModal] = useState<boolean>(false);
   const [newTaskTopicId, setNewTaskTopicId] = useState<number | null>(null);
+  const showRequestErrorToastMessage = useContext(RequestErrorToastContext).showMessage;
   const addTaskCallback = (
     title: string,
     priority: TaskPriority,
@@ -47,9 +49,13 @@ function Sidebar(props: {
         },
         (error) => {
           console.log(error);
+          let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
           }
+          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
@@ -64,9 +70,13 @@ function Sidebar(props: {
       },
       (error) => {
         console.log(error);
-        if (error.status === 401) {
-          onUnauthorizedErrorDefault();
-        }
+        let errorMessage = error.message;
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
+          }
+          showRequestErrorToastMessage(errorMessage);
       }
     );
   };
@@ -79,9 +89,13 @@ function Sidebar(props: {
       },
       (error) => {
         console.log(error);
-        if (error.status === 401) {
-          onUnauthorizedErrorDefault();
-        }
+        let errorMessage = error.message;
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
+          }
+          showRequestErrorToastMessage(errorMessage);
       }
     );
   };
@@ -94,9 +108,13 @@ function Sidebar(props: {
         },
         (error) => {
           console.log(error);
+          let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
           }
+          showRequestErrorToastMessage(errorMessage);
         }
       );
     }

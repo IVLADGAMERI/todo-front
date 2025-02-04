@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./App.css";
 import { Container, Row, Col } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
@@ -6,8 +6,11 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Main from "./components/Main";
 import UserInfo from "./components/UserInfo";
 import Task from "./components/task/Task";
+import RequestErrorToast from "./components/RequestErrorToast";
+import { RequestErrorToastContext } from "./components/RequestErrorToastContext";
 
 function App() {
+  const requestErrorToastContext = useContext(RequestErrorToastContext);
   const [loadingTopicsUpdate, setLoadingTopicsUpdate] = useState(false);
   return (
     <Container fluid className="App min-vh-100 d-flex flex-column text-white">
@@ -66,6 +69,11 @@ function App() {
           }
         />
       </Routes>
+      <RequestErrorToast
+        show={requestErrorToastContext.show}
+        onClose={requestErrorToastContext.close}
+        message={requestErrorToastContext.message}
+      />
     </Container>
   );
 }

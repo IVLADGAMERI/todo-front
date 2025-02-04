@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { TaskFullDTO, TaskPriority } from "../../Types";
@@ -16,6 +16,7 @@ import TaskContentEditor from "./taskContentEditor/TaskContentEditor";
 import TaskOptionsDropdown from "./TaskOptionsDropdown";
 import EditTaskModal from "../modals/EditTaskModal";
 import { AxiosError } from "axios";
+import { RequestErrorToastContext } from "../RequestErrorToastContext";
 
 function Task(props: {
   setLoadingTopicsUpdate: (value: boolean) => void;
@@ -33,6 +34,9 @@ function Task(props: {
   const [showUpdateTaskInfoModal, setShowUpdateTaskInfoModal] =
     useState<boolean>(false);
   const navigate = useNavigate();
+  const showRequestErrorToastMessage = useContext(
+    RequestErrorToastContext
+  ).showMessage;
   useEffect(() => {
     if (
       activeTaskIdNumber != null &&
@@ -48,9 +52,13 @@ function Task(props: {
         },
         (error) => {
           console.log(error);
+          let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
           }
+          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
@@ -69,9 +77,13 @@ function Task(props: {
         },
         (error) => {
           setLoadingUpdate(false);
+          let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
           }
+          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
@@ -89,9 +101,13 @@ function Task(props: {
       let onError = (error: AxiosError) => {
         setLoadingUpdate(false);
         setShowUpdateTaskInfoModal(false);
+        let errorMessage = error.message;
         if (error.status === 401) {
           onUnauthorizedErrorDefault();
+        } else if (error.response) {
+          errorMessage = error.response.data as string;
         }
+        showRequestErrorToastMessage(errorMessage);
       };
       if (newTitle !== taskFull.title) {
         props.setLoadingTopicsUpdate(true);
@@ -103,9 +119,13 @@ function Task(props: {
         onError = (error) => {
           props.setLoadingTopicsUpdate(false);
           setShowUpdateTaskInfoModal(false);
+          let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
           }
+          showRequestErrorToastMessage(errorMessage);
         };
       } else {
         setLoadingUpdate(true);
@@ -132,9 +152,13 @@ function Task(props: {
           navigate("/");
         },
         (error) => {
+          let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
+          } else if (error.response) {
+            errorMessage = error.response.data as string;
           }
+          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
