@@ -156,6 +156,20 @@ export function updateTaskInfo(
   })
 }
 
+export function finishTask(
+  data: {id: number},
+  onSuccess: () => void,
+  onError: (error: AxiosError) => void
+) {
+  axios.put("http://localhost:8080/task/finish", data, {withCredentials: true})
+  .then(() => {
+    onSuccess();
+  })
+  .catch((error) => {
+    onError(error);
+  })
+}
+
 export const authenticationUrl =
   "http://localhost:8080/oauth2/authorization/github";
 
