@@ -52,10 +52,9 @@ function Sidebar(props: {
           let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
-          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
@@ -73,10 +72,9 @@ function Sidebar(props: {
         let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
-          showRequestErrorToastMessage(errorMessage);
       }
     );
   };
@@ -92,10 +90,9 @@ function Sidebar(props: {
         let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
-          showRequestErrorToastMessage(errorMessage);
       }
     );
   };
@@ -111,10 +108,9 @@ function Sidebar(props: {
           let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
-          showRequestErrorToastMessage(errorMessage);
         }
       );
     }

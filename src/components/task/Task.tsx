@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { TaskFullDTO, TaskPriority } from "../../Types";
+import { TaskFullDTO, TaskPriority, TaskStatus } from "../../Types";
 import {
   deleteTaskById,
+  finishTask,
   getTaskFull,
   onUnauthorizedErrorDefault,
   updateTaskContent,
@@ -17,6 +18,7 @@ import TaskOptionsDropdown from "./TaskOptionsDropdown";
 import EditTaskModal from "../modals/EditTaskModal";
 import { AxiosError } from "axios";
 import { RequestErrorToastContext } from "../RequestErrorToastContext";
+import NotFound from "../NotFound";
 
 function Task(props: {
   setLoadingTopicsUpdate: (value: boolean) => void;
@@ -28,20 +30,25 @@ function Task(props: {
     : null;
   const [loading, setLoading] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [loadingSaveUpdate, setLoadingSaveUpdate] = useState(false);
+  const [loadingFinishedUpdate, setLoadingFinishedUpdate] = useState(false);
   const [taskFull, setTaskFull] = useState<TaskFullDTO | null>(null);
   const [content, setContent] = useState<string>("");
   const [isContentChanged, setIsContentChanged] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const [showUpdateTaskInfoModal, setShowUpdateTaskInfoModal] =
     useState<boolean>(false);
   const navigate = useNavigate();
   const showRequestErrorToastMessage = useContext(
     RequestErrorToastContext
   ).showMessage;
+  const isFinished: boolean = taskFull?.statusName === TaskStatus.FINISHED;
   useEffect(() => {
     if (
       activeTaskIdNumber != null &&
       !loadingUpdate &&
-      !props.loadingTopicsUpdate
+      !props.loadingTopicsUpdate &&
+      !isDeleted
     ) {
       getTaskFull(
         activeTaskIdNumber,
@@ -53,37 +60,42 @@ function Task(props: {
         (error) => {
           console.log(error);
           let errorMessage = error.message;
+          setLoading(false);
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
-          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
-  }, [activeTaskIdNumber, loading, loadingUpdate, props.loadingTopicsUpdate]);
-  if (loading || !taskFull) {
+  }, [activeTaskIdNumber, loading, loadingUpdate, props.loadingTopicsUpdate, isDeleted]);
+  if (loading) {
     return <SpinnerFlexFillBlock />;
+  }
+  if (!taskFull) {
+    return <NotFound message="Задача не найдена!" />
   }
   const updateTaskContentCallback = () => {
     if (activeTaskIdNumber && isContentChanged) {
       setLoadingUpdate(true);
+      setLoadingSaveUpdate(true);
       updateTaskContent(
         { taskId: activeTaskIdNumber, newContent: content },
         () => {
           setLoadingUpdate(false);
+          setLoadingSaveUpdate(false);
           setIsContentChanged(false);
         },
         (error) => {
           setLoadingUpdate(false);
+          setLoadingSaveUpdate(false);
           let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
-          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
@@ -104,10 +116,9 @@ function Task(props: {
         let errorMessage = error.message;
         if (error.status === 401) {
           onUnauthorizedErrorDefault();
-        } else if (error.response) {
-          errorMessage = error.response.data as string;
+        } else {
+          showRequestErrorToastMessage(errorMessage);
         }
-        showRequestErrorToastMessage(errorMessage);
       };
       if (newTitle !== taskFull.title) {
         props.setLoadingTopicsUpdate(true);
@@ -122,8 +133,8 @@ function Task(props: {
           let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
           showRequestErrorToastMessage(errorMessage);
         };
@@ -148,21 +159,44 @@ function Task(props: {
       deleteTaskById(
         { id: activeTaskIdNumber },
         () => {
-          props.setLoadingTopicsUpdate(false);
+          setIsDeleted(true);
           navigate("/");
+          props.setLoadingTopicsUpdate(false);
         },
         (error) => {
+          props.setLoadingTopicsUpdate(false);
           let errorMessage = error.message;
           if (error.status === 401) {
             onUnauthorizedErrorDefault();
-          } else if (error.response) {
-            errorMessage = error.response.data as string;
+          } else {
+            showRequestErrorToastMessage(errorMessage);
           }
-          showRequestErrorToastMessage(errorMessage);
         }
       );
     }
   };
+  const finishTaskCallback = () => {
+    if (activeTaskIdNumber) {
+      props.setLoadingTopicsUpdate(true);
+      setLoadingFinishedUpdate(true);
+      finishTask({id: activeTaskIdNumber},
+        () => {
+          props.setLoadingTopicsUpdate(false);
+          setLoadingFinishedUpdate(false);
+        },
+        (error) => {
+          props.setLoadingTopicsUpdate(false);
+          setLoadingFinishedUpdate(false);
+          let errorMessage = error.message;
+          if (error.status === 401) {
+            onUnauthorizedErrorDefault();
+          } else {
+            showRequestErrorToastMessage(errorMessage);
+          }
+        }
+      )
+    }
+  }
   return (
     <Container
       className="d-flex flex-column align-items-center w-100 flex-fill rounded-2 p-3 text-start"
@@ -177,11 +211,14 @@ function Task(props: {
         </Col>
         <Col xs={1}>
           <TaskOptionsDropdown
-            isSaveLoading={loadingUpdate}
+            isFinished={isFinished}
+            isLoadingFinishedUpdate={loadingFinishedUpdate}
+            isLoadingSavedUpdate={loadingSaveUpdate}
             isSaved={!isContentChanged}
             onEdit={() => {
               setShowUpdateTaskInfoModal(true);
             }}
+            onFinish={finishTaskCallback}
             onDelete={deleteTaskCallback}
             onSave={updateTaskContentCallback}
           />
