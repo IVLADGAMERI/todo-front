@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import InlineButton from "../inlineButton/InlineButton";
+import InlineButton from "../InlineButton/InlineButton";
 
 function SidebarSettingsNavLink() {
   const navigate = useNavigate();

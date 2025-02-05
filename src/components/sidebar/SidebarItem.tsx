@@ -2,9 +2,9 @@ import { Accordion, Col, Container, Row } from "react-bootstrap";
 import { Topic } from "../../Types";
 import { useState } from "react";
 import SidebarTaskNavLink from "./SidebarTaskNavLink";
-import ChevronInlineButton from "./ChevronInlineButton";
-import SidebarItemActionButtons from "./actionButtons/SidebarItemActionButtons";
-import AddTaskButton from "./actionButtons/AddTaskButton";
+import ChevronInlineButton from "../ChevronInlineButton/ChevronInlineButton";
+import SidebarItemActionButtons from "./ActionButtons/SidebarItemActionButtons";
+import AddTaskButton from "./ActionButtons/AddTaskButton";
 
 function SidebarItem(props: {
   topic: Topic;

@@ -3,7 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import { FormEvent } from "react";
 import { TaskPriority } from "../../Types";
-import DateTimeFormGroup from "../formGroups/DateTimeFormGroup";
+import DateTimeFormGroup from "../FormGroups/DateTimeFormGroup";
 
 function AddTaskModal(props: {
   show: boolean;

@@ -1,4 +1,4 @@
-import InlineButton from "../../inlineButton/InlineButton";
+import InlineButton from "../../InlineButton/InlineButton";
 
 function SidebarItemDeleteButton(props: { onClick: (event: any) => void }) {
   return (

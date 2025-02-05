@@ -2,10 +2,10 @@ import React, { useContext, useState } from "react";
 import "./App.css";
 import { Container, Row, Col } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
-import Sidebar from "./components/sidebar/Sidebar";
+import Sidebar from "./components/Sidebar/Sidebar";
 import Main from "./components/Main";
 import UserInfo from "./components/UserInfo";
-import Task from "./components/task/Task";
+import Task from "./components/Task/Task";
 import RequestErrorToast from "./components/RequestErrorToast";
 import { RequestErrorToastContext } from "./components/RequestErrorToastContext";
 

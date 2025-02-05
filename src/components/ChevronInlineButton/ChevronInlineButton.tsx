@@ -1,5 +1,5 @@
 import s from "./ChevronInlineButton.module.css";
-import InlineButton from "../inlineButton/InlineButton";
+import InlineButton from "../InlineButton/InlineButton";
 
 function ChevronInlineButton(props: {
   onClick: (event: any) => void;

@@ -1,8 +1,8 @@
 import { Task } from "../../Types";
 import { Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import InlineButton from "../inlineButton/InlineButton";
-import TaskStatusIcon from "../task/taskStatus/TaskStatusIcon";
+import InlineButton from "../InlineButton/InlineButton";
+import TaskStatusIcon from "../Task/TaskStatus/TaskStatusIcon";
 
 function SidebarTaskNavLink(props: {
   task: Task;

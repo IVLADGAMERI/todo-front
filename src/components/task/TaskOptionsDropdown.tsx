@@ -1,4 +1,4 @@
-import OptionsDropdown from "../dropdowns/OptionsDropdown";
+import OptionsDropdown from "../Dropdowns/OptionsDropdown";
 import { Dropdown } from "react-bootstrap";
 import SpinnerSvgAnimated from "../SpinnerSvgAnimated";
 import { useParams } from "react-router-dom";

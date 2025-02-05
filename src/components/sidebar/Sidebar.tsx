@@ -10,10 +10,10 @@ import {
 } from "../../Requests";
 import SidebarItem from "./SidebarItem";
 import { useParams } from "react-router-dom";
-import InlineButton from "../inlineButton/InlineButton";
+import InlineButton from "../InlineButton/InlineButton";
 import SidebarSettingsNavLink from "./SidebarSettingsNavLink";
-import AddTopicModal from "../modals/AddTopicModal";
-import AddTaskModal from "../modals/AddTaskModal";
+import AddTopicModal from "../Modals/AddTopicModal";
+import AddTaskModal from "../Modals/AddTaskModal";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import EmptySidebarItemsBLock from "./EmptySidebarItemsBlock";
 import { RequestErrorToastContext } from "../RequestErrorToastContext";

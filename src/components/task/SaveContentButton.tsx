@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import InlineButton from "../inlineButton/InlineButton";
+import InlineButton from "../InlineButton/InlineButton";
 
 function SaveContentButton(props: {
   disabled: boolean;

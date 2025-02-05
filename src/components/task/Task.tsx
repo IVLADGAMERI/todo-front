@@ -10,10 +10,10 @@ import {
 } from "../../Requests";
 import SpinnerFlexFillBlock from "../SpinnerFlexFillBlock";
 import HomeNavLinkButton from "./HomeNavLinkButton";
-import TaskInfo from "./taskInfo/TaskInfo";
-import TaskContentEditor from "./taskContentEditor/TaskContentEditor";
+import TaskInfo from "./TaskInfo/TaskInfo";
+import TaskContentEditor from "./TaskContentEditor/TaskContentEditor";
 import TaskOptionsDropdown from "./TaskOptionsDropdown";
-import EditTaskModal from "../modals/EditTaskModal";
+import EditTaskModal from "../Modals/EditTaskModal";
 import { AxiosError } from "axios";
 import { RequestErrorToastContext } from "../RequestErrorToastContext";
 import NotFound from "../NotFound";
@@ -40,7 +40,7 @@ function Task(props: {
     RequestErrorToastContext
   ).showMessage;
   const isFinished: boolean = taskFull?.statusName === TaskStatus.FINISHED;
-  const onRequestError = (error: AxiosError, causeDescription: string) => {
+  function onRequestError(error: AxiosError, causeDescription: string) {
     if (error.status === 401) {
       onUnauthorizedErrorDefault();
     } else {

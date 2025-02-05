@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { TaskPriority } from "../../Types";
 import { Modal, Form, FormGroup, Button } from "react-bootstrap";
-import DateTimeFormGroup from "../formGroups/DateTimeFormGroup";
+import DateTimeFormGroup from "../FormGroups/DateTimeFormGroup";
 
 function EditTaskModal(props: {
   show: boolean;
