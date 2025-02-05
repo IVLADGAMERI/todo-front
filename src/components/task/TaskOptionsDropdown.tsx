@@ -1,17 +1,67 @@
 import OptionsDropdown from "../dropdowns/OptionsDropdown";
 import { Dropdown } from "react-bootstrap";
 import SpinnerSvgAnimated from "../SpinnerSvgAnimated";
+import { useParams } from "react-router-dom";
+import {
+  deleteTaskById,
+  finishTask,
+} from "../../Requests";
+import { useState } from "react";
+import { AxiosError } from "axios";
 
 function TaskOptionsDropdown(props: {
   isSaved: boolean;
   isLoadingSavedUpdate: boolean;
   isFinished: boolean;
-  isLoadingFinishedUpdate: boolean;
-  onDelete: (event: any) => void;
-  onSave: (event: any) => void;
+  onDeleteSuccess: () => void;
+  onDelete: () => void;
+  onDeleteError: (error: AxiosError) => void;
+  onSave: () => void;
+  onFinish: () => void;
+  onFinishSuccess: () => void;
+  onFinishError: (error: AxiosError) => void;
   onEdit: (event: any) => void;
-  onFinish: (event: any) => void;
 }) {
+  const { activeTaskId } = useParams();
+  const activeTaskIdNumber = activeTaskId
+    ? Number.parseInt(activeTaskId)
+    : null;
+  const [loadingFinishedUpdate, setLoadingFinishedUpdate] = useState(false);
+  const [loadingDeleteUpdate, setLoadingDeleteUpdate] = useState(false);
+  const deleteTaskCallback = () => {
+    if (activeTaskIdNumber) {
+      props.onDelete();
+      setLoadingDeleteUpdate(true);
+      deleteTaskById(
+        { id: activeTaskIdNumber },
+        () => {
+          setLoadingDeleteUpdate(false);
+          props.onDeleteSuccess();
+        },
+        (error) => {
+          setLoadingDeleteUpdate(false);
+          props.onDeleteError(error);
+        }
+      );
+    }
+  };
+  const finishTaskCallback = () => {
+    if (activeTaskIdNumber) {
+      props.onFinish();
+      setLoadingFinishedUpdate(true);
+      finishTask(
+        { id: activeTaskIdNumber },
+        () => {
+          props.onFinishSuccess();
+          setLoadingFinishedUpdate(false);
+        },
+        (error) => {
+          props.onFinishError(error);
+          setLoadingFinishedUpdate(false);
+        }
+      );
+    }
+  };
   const saveItem = (
     <Dropdown.Item onClick={props.onSave}>
       <i className="bi bi-floppy me-2"></i>
@@ -32,7 +82,7 @@ function TaskOptionsDropdown(props: {
     </Dropdown.Item>
   );
   const finishItem = (
-    <Dropdown.Item onClick={props.onFinish}>
+    <Dropdown.Item onClick={finishTaskCallback}>
       <i className="bi bi-check-circle me-2"></i>
       Завершить
     </Dropdown.Item>
@@ -50,6 +100,22 @@ function TaskOptionsDropdown(props: {
       Завершение...
     </Dropdown.Item>
   );
+  const deleteItem = (
+    <Dropdown.Item className="text-danger" onClick={deleteTaskCallback}>
+      <i className="bi bi-trash3 me-2" />
+      Удалить
+    </Dropdown.Item>
+  );
+  const loadingDeleteUpdateItem = (
+    <Dropdown.Item
+      className="text-danger"
+      onClick={deleteTaskCallback}
+      disabled
+    >
+      <i className="bi bi-trash3 me-2" />
+      Удаляется...
+    </Dropdown.Item>
+  );
   return (
     <OptionsDropdown>
       <Dropdown.Item onClick={props.onEdit} disabled={props.isFinished}>
@@ -61,16 +127,13 @@ function TaskOptionsDropdown(props: {
         : props.isSaved
         ? savedItem
         : saveItem}
-      {props.isLoadingFinishedUpdate
+      {loadingFinishedUpdate
         ? loadingFinishUpdateItem
         : props.isFinished
         ? finishedItem
         : finishItem}
       <Dropdown.Divider />
-      <Dropdown.Item className="text-danger" onClick={props.onDelete}>
-        <i className="bi bi-trash3 me-2" />
-        Удалить
-      </Dropdown.Item>
+      {loadingDeleteUpdate ? loadingDeleteUpdateItem : deleteItem}
     </OptionsDropdown>
   );
 }

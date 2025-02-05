@@ -3,8 +3,6 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { TaskFullDTO, TaskPriority, TaskStatus } from "../../Types";
 import {
-  deleteTaskById,
-  finishTask,
   getTaskFull,
   onUnauthorizedErrorDefault,
   updateTaskContent,
@@ -31,7 +29,6 @@ function Task(props: {
   const [loading, setLoading] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [loadingSaveUpdate, setLoadingSaveUpdate] = useState(false);
-  const [loadingFinishedUpdate, setLoadingFinishedUpdate] = useState(false);
   const [taskFull, setTaskFull] = useState<TaskFullDTO | null>(null);
   const [content, setContent] = useState<string>("");
   const [isContentChanged, setIsContentChanged] = useState(false);
@@ -43,6 +40,13 @@ function Task(props: {
     RequestErrorToastContext
   ).showMessage;
   const isFinished: boolean = taskFull?.statusName === TaskStatus.FINISHED;
+  const onRequestError = (error: AxiosError, causeDescription: string) => {
+    if (error.status === 401) {
+      onUnauthorizedErrorDefault();
+    } else {
+      showRequestErrorToastMessage(causeDescription + error.message);
+    }
+  }
   useEffect(() => {
     if (
       activeTaskIdNumber != null &&
@@ -59,13 +63,8 @@ function Task(props: {
         },
         (error) => {
           console.log(error);
-          let errorMessage = error.message;
           setLoading(false);
-          if (error.status === 401) {
-            onUnauthorizedErrorDefault();
-          } else {
-            showRequestErrorToastMessage(errorMessage);
-          }
+          onRequestError(error, "Ошибка при получении данных задачи: ");
         }
       );
     }
@@ -90,12 +89,7 @@ function Task(props: {
         (error) => {
           setLoadingUpdate(false);
           setLoadingSaveUpdate(false);
-          let errorMessage = error.message;
-          if (error.status === 401) {
-            onUnauthorizedErrorDefault();
-          } else {
-            showRequestErrorToastMessage(errorMessage);
-          }
+          onRequestError(error, "Ошибка сохранения текста задачи: ");
         }
       );
     }
@@ -113,30 +107,18 @@ function Task(props: {
       let onError = (error: AxiosError) => {
         setLoadingUpdate(false);
         setShowUpdateTaskInfoModal(false);
-        let errorMessage = error.message;
-        if (error.status === 401) {
-          onUnauthorizedErrorDefault();
-        } else {
-          showRequestErrorToastMessage(errorMessage);
-        }
+        onRequestError(error, "Ошибка сохранения данных задачи: ")
       };
       if (newTitle !== taskFull.title) {
         props.setLoadingTopicsUpdate(true);
         onSuccess = () => {
           props.setLoadingTopicsUpdate(false);
-
           setShowUpdateTaskInfoModal(false);
         };
         onError = (error) => {
           props.setLoadingTopicsUpdate(false);
           setShowUpdateTaskInfoModal(false);
-          let errorMessage = error.message;
-          if (error.status === 401) {
-            onUnauthorizedErrorDefault();
-          } else {
-            showRequestErrorToastMessage(errorMessage);
-          }
-          showRequestErrorToastMessage(errorMessage);
+          onRequestError(error, "Ошибка сохранения данных задачи: ")
         };
       } else {
         setLoadingUpdate(true);
@@ -153,50 +135,6 @@ function Task(props: {
       );
     }
   };
-  const deleteTaskCallback = () => {
-    if (activeTaskIdNumber) {
-      props.setLoadingTopicsUpdate(true);
-      deleteTaskById(
-        { id: activeTaskIdNumber },
-        () => {
-          setIsDeleted(true);
-          navigate("/");
-          props.setLoadingTopicsUpdate(false);
-        },
-        (error) => {
-          props.setLoadingTopicsUpdate(false);
-          let errorMessage = error.message;
-          if (error.status === 401) {
-            onUnauthorizedErrorDefault();
-          } else {
-            showRequestErrorToastMessage(errorMessage);
-          }
-        }
-      );
-    }
-  };
-  const finishTaskCallback = () => {
-    if (activeTaskIdNumber) {
-      props.setLoadingTopicsUpdate(true);
-      setLoadingFinishedUpdate(true);
-      finishTask({id: activeTaskIdNumber},
-        () => {
-          props.setLoadingTopicsUpdate(false);
-          setLoadingFinishedUpdate(false);
-        },
-        (error) => {
-          props.setLoadingTopicsUpdate(false);
-          setLoadingFinishedUpdate(false);
-          let errorMessage = error.message;
-          if (error.status === 401) {
-            onUnauthorizedErrorDefault();
-          } else {
-            showRequestErrorToastMessage(errorMessage);
-          }
-        }
-      )
-    }
-  }
   return (
     <Container
       className="d-flex flex-column align-items-center w-100 flex-fill rounded-2 p-3 text-start"
@@ -212,14 +150,27 @@ function Task(props: {
         <Col xs={1}>
           <TaskOptionsDropdown
             isFinished={isFinished}
-            isLoadingFinishedUpdate={loadingFinishedUpdate}
             isLoadingSavedUpdate={loadingSaveUpdate}
             isSaved={!isContentChanged}
             onEdit={() => {
               setShowUpdateTaskInfoModal(true);
             }}
-            onFinish={finishTaskCallback}
-            onDelete={deleteTaskCallback}
+            onFinish={() => props.setLoadingTopicsUpdate(true)}
+            onFinishSuccess={() => props.setLoadingTopicsUpdate(false)}
+            onFinishError={(error) => {
+              props.setLoadingTopicsUpdate(false);
+              onRequestError(error, "Ошибка обновления статуса задачи: ");
+            }}
+            onDelete={() => props.setLoadingTopicsUpdate(true)}
+            onDeleteSuccess={() => {
+              props.setLoadingTopicsUpdate(false);
+              setIsDeleted(true);
+              navigate("/");
+            }}
+            onDeleteError={(error) => {
+              props.setLoadingTopicsUpdate(false);
+              onRequestError(error, "Ошибка удаления задачи: ");
+            }}
             onSave={updateTaskContentCallback}
           />
         </Col>
